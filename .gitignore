@@ -1,0 +1,116 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Project Setup
+initialize.py
+
+# Data Files (large)
+data/raw/**
+data/processed/**
+data/simulated/**
+!data/.gitkeep
+*.csv
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.npy
+*.npz
+
+# Model Files
+results/models/**
+!results/models/.gitkeep
+*.pkl
+*.joblib
+*.model
+
+# Output Files
+results/figures/**
+!results/figures/.gitkeep
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.svg
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+notebooks/**/*.ipynb
+!notebooks/.gitkeep
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.sublime-project
+.sublime-workspace
+
+# Environment and Config
+.env.local
+.env.*.local
+config.local.py
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.log
+*.out
+
+# OS Specific
+.DS_Store
+Thumbs.db
+.windows
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Performance Profiling
+*.prof
+*.pstats
+
+# Temporary Jupyter stuff
+.ipynb_checkpoints
+__pycache__
+
+# Large files that shouldn't be committed
+*.zip
+*.tar.gz
+*.tar.bz2 
+*.rar

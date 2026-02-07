@@ -1,0 +1,12 @@
+numpy
+pandas
+scipy
+matplotlib
+seaborn
+scikit-learn
+h5py
+# For advanced PSA/ML
+xgboost
+torch
+# Optional: for physical gas properties
+# garfieldpp (Requires C++ installation, but we can use Python wrappers)
