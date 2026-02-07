@@ -3,7 +3,7 @@ import numpy as np
 def calculate_chi_square(t, pulse, peak_val, rise_time):
     # Add a safety check for zero rise_time
     if rise_time <= 0:
-        return 999.0 # Assign a high error value for "bad" pulses
+        return 999.0 # Assign a high error value for bad pulses
     
     t0 = t[np.argmax(pulse)] - (rise_time * 0.5)
     ideal = np.zeros_like(t)

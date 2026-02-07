@@ -14,7 +14,6 @@ def train_psa_model():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
     # 3. Train a Random Forest Classifier
-    # We use RF because it handles non-linear separations well
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
@@ -22,7 +21,7 @@ def train_psa_model():
     y_pred = model.predict(X_test)
     print("Classification Report:\n", classification_report(y_test, y_pred))
     
-    # Feature Importance - which physical parameter mattered most?
+    # Feature Importance Analysis
     importances = model.feature_importances_
     for name, imp in zip(X.columns, importances):
         print(f"Feature: {name}, Importance: {imp:.4f}")

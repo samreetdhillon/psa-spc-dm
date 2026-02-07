@@ -1,3 +1,8 @@
+"""
+FOR DIAGNOSTIC PURPOSES ONLY — NOT A PHYSICAL RESULT
+Used for internal tuning of PSA features.
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
