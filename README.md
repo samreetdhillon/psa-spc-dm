@@ -378,72 +378,6 @@ python -m src.utils.visualize_separation
 
 ---
 
-## Future Extensions
-
-### Short-term Improvements
-
-1. **Hyperparameter Optimization**:
-   - Tune Random Forest depth, number of trees, split criteria
-   - Use GridSearchCV or Bayesian optimization
-   - Target: Improve F1-score from 0.96 → 0.98+
-
-2. **Additional Classifiers**:
-   - Gradient Boosting (XGBoost) for potentially better generalization
-   - Neural Networks for end-to-end waveform analysis
-   - Ensemble methods combining multiple models
-
-3. **Realistic Detector Effects**:
-   - Electron drift diffusion
-   - Recombination losses
-   - Realistic noise models
-   - Detector geometry effects
-
-### Medium-term Extensions
-
-4. **Deep Learning on Raw Waveforms**:
-   - Convolutional Neural Networks (CNNs) for waveform classification
-   - Eliminates manual feature extraction
-   - Potentially captures subtle patterns
-
-5. **Transfer Learning**:
-   - Pre-train on synthetic data (unlimited examples)
-   - Fine-tune on real detector calibration data
-   - Improves generalization to actual experiments
-
-6. **Uncertainty Quantification**:
-   - Bayesian Random Forests for confidence estimates
-   - Critical for physics interpretation
-   - Enable optimal decision thresholds
-
-7. **Anomaly Detection**:
-   - Identify unexpected pulse shapes (instrumental faults)
-   - One-class SVM or Isolation Forest
-   - Improve data quality monitoring
-
-### Long-term Research Directions
-
-8. **Simulation-Based Inference**:
-   - Train models on physics simulations of WIMP interactions
-   - Direct comparison with experimental data
-   - Extract dark matter properties if signal detected
-
-9. **Real Detector Integration**:
-   - Adapt pipeline for NEWS-G/DarkSPHERE actual detectors
-   - Handle detector-specific noise and calibration
-   - Deploy in online monitoring systems
-
-10. **Generalization to Other Experiments**:
-    - Adapt techniques for other dark matter searches
-    - Neutrino experiments (scintillation, ionization)
-    - Gravitational wave event triggers
-
-11. **Physics-Informed Machine Learning**:
-    - Incorporate physical constraints as regularization
-    - Ensure predictions respect conservation laws
-    - Improve interpretability and trustworthiness
-
----
-
 ## Contributing
 
 Contributions are welcome! Areas for improvement:
@@ -460,12 +394,6 @@ Contributions are welcome! Areas for improvement:
 **Author**: Samreet Singh Dhillon
 **Affiliation**: Panjab University, Chandigarh
 **Email**: samreetsinghdhillon@gmail.com
-
-### Key Physics References
-
-1. Aprile, E., et al. (2021). "Dark Matter Results from 225 Live Days of XENON1T Data". _Physical Review Letters_, 122(14).
-2. Teixeira, A. M. M., et al. (2017). "NEWS-G: A new experiment for directional dark matter detection". _JCAP_, 2017(12).
-3. Billard, J., et al. (2013). "Directional detection of galactic Dark Matter". _Physics Letters B_, 722(1-3).
 
 ---
 
