@@ -14,7 +14,9 @@ A machine learning pipeline for discriminating dark matter signals from backgrou
 - [Setup Instructions](#setup-instructions)
 - [Usage Guide](#usage-guide)
 - [File Descriptions](#file-descriptions)
-- [Future Extensions](#future-extensions)
+- [Contributing](#contributing)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
 
 ---
 
@@ -389,7 +391,7 @@ Contributions are welcome! Areas for improvement:
 
 ---
 
-## Contact & References
+## Contact
 
 **Author**: Samreet Singh Dhillon
 **Affiliation**: Panjab University, Chandigarh
