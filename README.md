@@ -13,6 +13,7 @@ A machine learning pipeline for discriminating dark matter signals from backgrou
 - [Project Structure](#project-structure)
 - [Setup Instructions](#setup-instructions)
 - [Usage Guide](#usage-guide)
+- [Educational Notebooks](#educational-notebooks)
 - [File Descriptions](#file-descriptions)
 - [Contributing](#contributing)
 - [Contact](#contact)
@@ -212,7 +213,11 @@ psa-spc-dm/
 │   └── utils/
 │       └── visualize_separation.py # Feature space visualization
 │
-├── notebooks/                    # Jupyter notebooks (analysis, exploration)
+├── notebooks/                    # Jupyter notebooks (educational tutorials & analysis)
+│   ├── 01_Pulse_Physics_Basics.ipynb          # Learn detector pulse physics
+│   ├── 02_Feature_Extraction.ipynb            # Extract physics features from pulses
+│   ├── 03_ML_Classification_Training.ipynb    # Train ML classifier
+│   └── 04_Robustness_Blind_Testing.ipynb      # Test model on realistic data
 │
 └── results/
     ├── models/
@@ -334,6 +339,148 @@ python -m src.utils.visualize_separation
 ```
 
 **Output**: Plots showing feature distributions for signal vs. background
+
+---
+
+## Educational Notebooks
+
+We provide **4 comprehensive Jupyter notebooks** that teach the physics and ML concepts step-by-step in simple language. Each notebook explains the physical relevance of each cell and interprets the results.
+
+### 📙 [Notebook 1: Pulse Physics Basics](notebooks/01_Pulse_Physics_Basics.ipynb)
+
+**What You'll Learn:**
+
+- How detector pulses reflect particle interaction types
+- Why nuclear recoils (dark matter) create different pulse shapes than electronic recoils (background)
+- What a "pile-up" event looks like and why it's dangerous
+
+**Key Concepts:**
+
+- Physics formula for detector pulses: exponential rise and decay
+- Rise time as the primary physical discrimination parameter
+- Realistic noise in measurement
+
+**Hands-On:**
+
+- Visualize nuclear vs. electronic recoil pulses side-by-side
+- See what pile-up events look like
+- Understand why we can tell them apart
+
+---
+
+### 🔬 [Notebook 2: Feature Extraction](notebooks/02_Feature_Extraction.ipynb)
+
+**What You'll Learn:**
+
+- How to extract 5 physics-based features from raw 500-point waveforms
+- Why each feature matters physically
+- How features separate signal from background
+
+**Key Concepts:**
+
+- **Rise Time**: How fast the pulse grows (KEY discriminator)
+- **Peak Amplitude**: Total energy deposited
+- **FWHM**: Pulse width and duration
+- **Area/Integral**: Total charge collected
+- **Chi-Square**: Goodness-of-fit for detecting pile-up
+
+**Hands-On:**
+
+- Understand the math behind each feature calculation
+- See example feature values for signal vs. background vs. pile-up
+- Visualize how 500 numbers compress to 5 interpretable features
+
+---
+
+### 🤖 [Notebook 3: ML Classification & Training](notebooks/03_ML_Classification_Training.ipynb)
+
+**What You'll Learn:**
+
+- Why machine learning is useful for this problem (non-linear patterns, robustness)
+- How Random Forest classifiers work (voting ensemble of decision trees)
+- How to train and evaluate an ML model
+
+**Key Concepts:**
+
+- Feature space: how signal and background cluster separately
+- Train/test split: avoiding overfitting
+- Classification metrics: precision, recall, F1-score
+- Feature importance: which features matter most for decisions
+
+**Hands-On:**
+
+- Generate 1000 synthetic training pulses
+- Train a 100-tree Random Forest classifier
+- Examine confusion matrix and classification report
+- See that **Rise Time is 44% of the model's decision** (validates physics!)
+
+---
+
+### 🔬 [Notebook 4: Robustness Testing & Blind Discoveries](notebooks/04_Robustness_Blind_Testing.ipynb)
+
+**What You'll Learn:**
+
+- How to test a trained model under realistic detector conditions
+- Why "blind" testing is critical for avoiding false discoveries
+- How the model handles pile-up events (the most dangerous background)
+
+**Key Concepts:**
+
+- Blind test: predictions on unseen "mystery" data with unknown composition
+- False discovery rate: critical metric for real experiments
+- Pile-up rejection: how well the model can identify overlapping events
+- ROC curves: understanding model discrimination ability
+
+**Hands-On:**
+
+- Generate 33 mystery events (10 signal + 15 background + 8 pile-up)
+- Run trained model without knowing true labels
+- Count true positives, false positives, and rejected pile-ups
+- **Success metric**: Zero false discoveries = safe for real experiment!
+
+---
+
+### How to Use the Notebooks
+
+1. **Install Jupyter**:
+
+   ```bash
+   pip install jupyter
+   ```
+
+2. **Launch Jupyter**:
+
+   ```bash
+   jupyter notebook
+   ```
+
+3. **Open notebooks**:
+   - Navigate to `notebooks/` folder
+   - Open `01_Pulse_Physics_Basics.ipynb` and start learning!
+   - Run cells sequentially (they build on each other)
+
+4. **Interactive Learning**:
+   - Read markdown explanations before each code cell
+   - Run code cells to see results
+   - Try modifying parameters to see how physics changes!
+
+---
+
+### Why These 4 Notebooks?
+
+| Notebook              | Focus                 | Audience                              |
+| --------------------- | --------------------- | ------------------------------------- |
+| 1. Pulse Physics      | Physics understanding | Physicists, students new to detectors |
+| 2. Feature Extraction | Data engineering      | ML engineers, domain experts          |
+| 3. ML Classification  | Machine learning      | Data scientists, ML students          |
+| 4. Blind Testing      | Practical validation  | Experimentalists, quality assurance   |
+
+Together, they form a **complete educational story**:
+
+```
+Physics → Feature Eng → ML Training → Real-World Testing
+  (What)      (How)         (Why)         (Proof)
+```
 
 ---
 

@@ -1,5 +1,10 @@
-from ..simulation.generate_pulses import simulate_pulse, simulate_pileup
-from ..features.extraction import extract_features
+
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from simulation.generate_pulses import simulate_pulse, simulate_pileup
+from features.extraction import extract_features
 import joblib
 import numpy as np
 import pandas as pd
