@@ -1,127 +1,35 @@
-# PSA-SPC-DM: Pulse Shape Analysis for Dark Matter Detection
+# PSA-SPC-DM
 
-A machine learning pipeline for discriminating dark matter signals from background noise in single-phase charge (SPC) detectors using pulse shape analysis (PSA) and physics-based feature extraction.
+_A machine learning pipeline for discriminating dark matter signals from background noise in Spherical Proportional Counter (SPC) detectors using pulse shape analysis (PSA) and physics-based feature extraction._
 
-## Table of Contents
+## Problem
 
-- [Problem Statement](#problem-statement)
-- [Physics Background](#physics-background)
-- [Solution Overview](#solution-overview)
-- [Methodology](#methodology)
-- [Results](#results)
-- [Relevance to Physics](#relevance-to-physics)
-- [Project Structure](#project-structure)
-- [Setup Instructions](#setup-instructions)
-- [Usage Guide](#usage-guide)
-- [Educational Notebooks](#educational-notebooks)
-- [File Descriptions](#file-descriptions)
-- [Contributing](#contributing)
-- [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
+The search for Dark Matter is a "needle in a haystack" problem. Dark matter detection experiments like NEWS-G and DarkSPHERE use Spherical Proportional Counter (SPC), in which a Dark Matter interaction (Signal) produces a tiny electronic pulse. Unfortunately, natural radioactivity and electronic noise (Background) produce pulses that look almost identical.
 
----
+So the challenge is to distinguish a rare Dark Matter ping from the constant static of the universe. If we cannot perfectly filter out the background, we risk a False Discovery, claiming we found Dark Matter when we actually just measured detector noise.
 
-## Problem Statement
+## Solution
 
-Dark matter detection experiments like NEWS-G and DarkSPHERE use single-phase charge (SPC) detectors to search for Weakly Interacting Massive Particles (WIMPs). The challenge is **distinguishing rare dark matter signal events from background noise and detector artifacts**, particularly:
+Pulse Shape Analysis (PSA) leverages the unique physics of electron drift in a sphere.
 
-1. **Background events**: Electronic recoils with different pulse shapes than nuclear recoils
-2. **Pile-up events**: Multiple particles arriving at the detector simultaneously, creating distorted waveforms
-3. **Instrumental noise**: Systematic effects that mimic signal characteristics
+- **The Signal (Nuclear Recoil):** Dark Matter hits a single point, creating a tight cluster of electrons that arrive at the sensor nearly all at once. This creates a **sharp, fast pulse**.
+- **The Background (Electronic Recoil):** Radioactive particles leave long, streaking tracks. Electrons arrive at the sensor at different times, creating a **wide, sluggish pulse**.
 
-A false positive discovery would be catastrophic, so robust background discrimination is critical.
-
----
-
-## Physics Background
-
-### SPC Detectors
-
-Single-Phase Charge (SPC) detectors collect ionization produced by particle interactions:
-
-- **Nuclear Recoils** (dark matter): Produce short, sharp pulses (rise_time ≈ 2 μs)
-- **Electronic Recoils** (background): Produce slower, broader pulses (rise_time ≈ 8 μs)
-- **Pile-up**: Overlapping events create combined, distorted waveforms
-
-### Pulse Shape Analysis
-
-The ionization pulse shape reflects the interaction type via:
-
-- **Peak Amplitude**: Total charge collected
-- **Rise Time**: Electron drift properties and recoil type (10%-90% timing)
-- **Area (Integral)**: Total integrated charge
-- **FWHM (Full Width at Half Max)**: Pulse width
-- **Chi-Square to Ideal Pulse**: Goodness-of-fit for pile-up detection
-
-These physics-based features enable discrimination without explicit detector simulation.
-
----
-
-## Solution Overview
-
-This project implements a **two-stage machine learning pipeline**:
-
-1. **Feature Extraction**: Convert raw waveforms into interpretable physics parameters
-2. **Classification**: Train a Random Forest to separate signals from background
-3. **Robustness Testing**: Validate performance against pile-up and noise
-
-The Random Forest was chosen because it:
-
-- Handles non-linear feature interactions (important for real detector data)
-- Provides feature importance rankings (physical insights)
-- Generalizes well with limited training data
-- Requires no parameter tuning for baseline performance
-
----
+By measuring the **Rise Time** and the "physicality" (**Chi-Square**) of these pulses, we can create a digital filter to separate the ghosts from the noise.
 
 ## Methodology
 
-### Step 1: Synthetic Pulse Generation
+I built a pipeline in Python to test this discrimination strategy:
 
-Generate realistic detector waveforms using physics-based pulse shapes:
-
-```
-Signal (Nuclear Recoil):     pulse(t) = A × (t/τ) × exp(-t/τ), τ ≈ 2 μs
-Background (Electronic):     pulse(t) = A × (t/τ) × exp(-t/τ), τ ≈ 8 μs
-Pile-up:                     pulse(t) = pulse₁(t) + pulse₂(t - Δt)
-```
-
-Where:
-
-- `A` = amplitude (peak voltage)
-- `τ` = rise time (characteristic decay constant)
-- `Δt` = time delay between pile-up events
-
-Gaussian noise added to simulate detector noise (σ ≈ 0.25 V).
-
-### Step 2: Feature Extraction
-
-For each waveform, extract 5 physics-based features:
-
-| Feature        | Description                    | Physics Relevance             |
-| -------------- | ------------------------------ | ----------------------------- |
-| **Peak**       | Maximum amplitude              | Proportional to recoil energy |
-| **Rise Time**  | 10%-90% crossing time          | Distinguishes recoil type     |
-| **Area**       | Integral of pulse              | Total ionization produced     |
-| **FWHM**       | Full width at half maximum     | Event duration                |
-| **Chi-Square** | Goodness-of-fit to ideal pulse | Pile-up detection metric      |
-
-### Step 3: Model Training
-
-- **Data**: 1000 synthetic pulses (500 signal, 500 background)
-- **Algorithm**: Random Forest (100 trees)
-- **Features**: All 5 physics-based parameters
-- **Train/Test Split**: 70%-30%
-- **Evaluation**: Classification report, confusion matrix, feature importance
-
-### Step 4: Blind Testing
-
-Generate 50 "mystery" events (mix of signal, background, pile-up) and test model robustness:
-
-- Count false positives (pile-up/noise classified as signal)
-- Success = zero false discoveries
-
----
+1.  **Physics-Based Simulation:** Generated synthetic pulses using response functions that mimic real SPC electronics, including Gaussian noise and "pile-up" (overlapping events).
+2.  **Feature Extraction:** Processed raw waveforms into five physical descriptors:
+    - _Peak Amplitude_ (Energy proxy)
+    - _Rise Time_ (10% to 90% speed)
+    - _FWHM_ (Pulse width)
+    - _Area_ (Total collected charge)
+    - _Chi-Square ($\chi^2$)_ (Template matching to catch lumpy, non-physical pulses).
+3.  **Machine Learning:** Trained a **Random Forest Classifier** to learn the difference between Signal and Background.
+4.  **The Discovery Cut:** Implemented an ultra-conservative 99.5% probability threshold to ensure zero background leakage.
 
 ## Results
 
@@ -155,30 +63,6 @@ Signal candidates found : 0
 Background leakage      : 0
 STATUS: Discovery SAFE (0 expected background events)
 ```
-
----
-
-## Relevance to Physics
-
-### Direct Applications
-
-1. **Dark Matter Searches**: Direct detection experiments rely on robust background rejection. This pipeline demonstrates ML techniques for real detector data processing.
-
-2. **Signal Efficiency**: Achieving high sensitivity (catching real signals) while minimizing background contamination is the holy grail of rare-event searches.
-
-3. **Pile-up Rejection**: Real detectors must handle pile-up. This work shows how physics-informed ML can identify overlapping events.
-
-### Broader Context
-
-- **NEWS-G/DarkSPHERE Collaboration**: Real detectors use similar pulse analysis
-- **Generalization**: These techniques apply to other rare-event searches (neutrinos, supernovae, exotic particles)
-- **Interpretability**: Physics-based features make ML models transparent and trustworthy
-
-### Why This Matters
-
-Dark matter comprises 85% of matter in the universe, yet remains undetected. Direct detection experiments require unprecedented background rejection. Machine learning, combined with physics domain knowledge, provides the edge needed to distinguish genuine discoveries from instrument artifacts.
-
----
 
 ## Project Structure
 
@@ -226,8 +110,6 @@ psa-spc-dm/
     └── final_report.py            # Summary and conclusions
 ```
 
----
-
 ## Setup Instructions
 
 ### Requirements
@@ -272,280 +154,19 @@ psa-spc-dm/
    python initialize.py
    ```
 
-### Troubleshooting
-
-- **Import errors**: Ensure virtual environment is activated and dependencies are installed
-- **Path errors**: Run commands from the project root directory
-- **File not found**: Check that `initialize.py` was executed successfully
-
----
-
-## Usage Guide
-
-### 1. Generate Data and Extract Features
-
-Generate 1000 synthetic pulses and extract physics-based features:
-
-```bash
-python main.py
-```
-
-**Output**: `data/processed/pulse_features.csv` (1000 samples with 5 features + labels)
-
-### 2. Train the Model
-
-Train the Random Forest classifier on the extracted features:
-
-```bash
-python -m src.models.train
-```
-
-**Output**:
-
-- `results/models/psa_random_forest.pkl` (trained model)
-- Classification report and feature importance scores
-
-### 3. Run Blind Tests
-
-Test model robustness on 50 unseen "mystery" events:
-
-```bash
-python -m src.models.blind_test
-```
-
-**Output**: False positive count and robustness assessment
-
-### 4. Complete Pipeline (All Steps)
-
-Run the full pipeline end-to-end:
-
-```bash
-python src/final_discovery_run.py
-```
-
-This executes:
-
-1. Feature extraction (Step 1)
-2. Model training (Step 2)
-3. Blind robustness testing (Step 3)
-4. Project summary
-
-### 5. Visualize Feature Separation
-
-Create visualizations of feature distributions by signal type:
-
-```bash
-python -m src.utils.visualize_separation
-```
-
-**Output**: Plots showing feature distributions for signal vs. background
-
----
-
-## Educational Notebooks
-
-We provide **4 comprehensive Jupyter notebooks** that teach the physics and ML concepts step-by-step in simple language. Each notebook explains the physical relevance of each cell and interprets the results.
-
-### 📙 [Notebook 1: Pulse Physics Basics](notebooks/01_Pulse_Physics_Basics.ipynb)
-
-**What You'll Learn:**
-
-- How detector pulses reflect particle interaction types
-- Why nuclear recoils (dark matter) create different pulse shapes than electronic recoils (background)
-- What a "pile-up" event looks like and why it's dangerous
-
-**Key Concepts:**
-
-- Physics formula for detector pulses: exponential rise and decay
-- Rise time as the primary physical discrimination parameter
-- Realistic noise in measurement
-
-**Hands-On:**
-
-- Visualize nuclear vs. electronic recoil pulses side-by-side
-- See what pile-up events look like
-- Understand why we can tell them apart
-
----
-
-### 🔬 [Notebook 2: Feature Extraction](notebooks/02_Feature_Extraction.ipynb)
-
-**What You'll Learn:**
-
-- How to extract 5 physics-based features from raw 500-point waveforms
-- Why each feature matters physically
-- How features separate signal from background
-
-**Key Concepts:**
-
-- **Rise Time**: How fast the pulse grows (KEY discriminator)
-- **Peak Amplitude**: Total energy deposited
-- **FWHM**: Pulse width and duration
-- **Area/Integral**: Total charge collected
-- **Chi-Square**: Goodness-of-fit for detecting pile-up
-
-**Hands-On:**
-
-- Understand the math behind each feature calculation
-- See example feature values for signal vs. background vs. pile-up
-- Visualize how 500 numbers compress to 5 interpretable features
-
----
-
-### 🤖 [Notebook 3: ML Classification & Training](notebooks/03_ML_Classification_Training.ipynb)
-
-**What You'll Learn:**
-
-- Why machine learning is useful for this problem (non-linear patterns, robustness)
-- How Random Forest classifiers work (voting ensemble of decision trees)
-- How to train and evaluate an ML model
-
-**Key Concepts:**
-
-- Feature space: how signal and background cluster separately
-- Train/test split: avoiding overfitting
-- Classification metrics: precision, recall, F1-score
-- Feature importance: which features matter most for decisions
-
-**Hands-On:**
-
-- Generate 1000 synthetic training pulses
-- Train a 100-tree Random Forest classifier
-- Examine confusion matrix and classification report
-- See that **Rise Time is 44% of the model's decision** (validates physics!)
-
----
-
-### 🔬 [Notebook 4: Robustness Testing & Blind Discoveries](notebooks/04_Robustness_Blind_Testing.ipynb)
-
-**What You'll Learn:**
-
-- How to test a trained model under realistic detector conditions
-- Why "blind" testing is critical for avoiding false discoveries
-- How the model handles pile-up events (the most dangerous background)
-
-**Key Concepts:**
-
-- Blind test: predictions on unseen "mystery" data with unknown composition
-- False discovery rate: critical metric for real experiments
-- Pile-up rejection: how well the model can identify overlapping events
-- ROC curves: understanding model discrimination ability
-
-**Hands-On:**
-
-- Generate 33 mystery events (10 signal + 15 background + 8 pile-up)
-- Run trained model without knowing true labels
-- Count true positives, false positives, and rejected pile-ups
-- **Success metric**: Zero false discoveries = safe for real experiment!
-
----
-
-### How to Use the Notebooks
-
-1. **Install Jupyter**:
-
-   ```bash
-   pip install jupyter
-   ```
-
-2. **Launch Jupyter**:
-
-   ```bash
-   jupyter notebook
-   ```
-
-3. **Open notebooks**:
-   - Navigate to `notebooks/` folder
-   - Open `01_Pulse_Physics_Basics.ipynb` and start learning!
-   - Run cells sequentially (they build on each other)
-
-4. **Interactive Learning**:
-   - Read markdown explanations before each code cell
-   - Run code cells to see results
-   - Try modifying parameters to see how physics changes!
-
----
-
-### Why These 4 Notebooks?
-
-| Notebook              | Focus                 | Audience                              |
-| --------------------- | --------------------- | ------------------------------------- |
-| 1. Pulse Physics      | Physics understanding | Physicists, students new to detectors |
-| 2. Feature Extraction | Data engineering      | ML engineers, domain experts          |
-| 3. ML Classification  | Machine learning      | Data scientists, ML students          |
-| 4. Blind Testing      | Practical validation  | Experimentalists, quality assurance   |
-
-Together, they form a **complete educational story**:
-
-```
-Physics → Feature Eng → ML Training → Real-World Testing
-  (What)      (How)         (Why)         (Proof)
-```
-
----
-
-## File Descriptions
-
-### Configuration & Setup
-
-- **`initialize.py`**: Creates project directory structure and stub files (run once)
-- **`requirements.txt`**: Project dependencies (numpy, pandas, scikit-learn, matplotlib, etc.)
-- **`.gitignore`**: Specifies files/folders to exclude from version control
-
-### Main Pipeline
-
-- **`main.py`**: Entry point - orchestrates data generation and feature extraction
-- **`src/final_discovery_run.py`**: Runs complete analysis pipeline (data → features → training → testing)
-
-### Simulation Module (`src/simulation/`)
-
-- **`generate_pulses.py`**:
-  - `simulate_pulse()`: Generate individual physics-realistic pulses
-  - `simulate_pileup()`: Generate overlapping (pile-up) events
-  - `generate_dataset()`: Create balanced training dataset (signal + background)
-
-### Feature Extraction (`src/features/`)
-
-- **`extraction.py`**:
-  - `extract_features()`: Convert raw waveform → 5 physics features
-  - `calculate_chi_square()`: Compute goodness-of-fit metric for pile-up detection
-  - `process_batch()`: Batch feature extraction for efficiency
-
-### Machine Learning (`src/models/`)
-
-- **`train.py`**:
-  - `train_psa_model()`: Train Random Forest classifier
-  - Outputs model weights and evaluation metrics
-- **`blind_test.py`**:
-  - `run_blind_test()`: Evaluate on 50 unseen events
-  - Counts false positives (robustness metric)
-- **`evaluate_robustness.py`**: Additional performance analysis and cross-validation
-
-### Utilities (`src/utils/`)
-
-- **`visualize_separation.py`**: Generate visualizations of feature distributions and ROC curves
-
----
-
-## Contributing
-
-Contributions are welcome! Areas for improvement:
-
-- Feature engineering refinements
-- Model optimization and new algorithms
-- Documentation and tutorials
-- Real detector data support
-
----
+## How to Run
+
+1. **Generate & Extract Features:** `python main.py`
+2. **Train Model:** `python src/models/train.py`
+3. **Run Blind Tests:** `python -m src.models.blind_test`
+4. **Analyze Physics:** `python src/utils/physical_analysis.py`
+5. **Visualize Feature Separation:** `python -m src.utils.visualize_separation`
+6. **Final Run:** `python src/final_discovery_run.py`
 
 ## Contact
 
-**Author**: Samreet Singh Dhillon
-**Affiliation**: Panjab University, Chandigarh
-**Email**: samreetsinghdhillon@gmail.com
+Samreet Singh Dhillon
 
----
+Panjab University, Chandigarh
 
-## Acknowledgments
-
-This project demonstrates machine learning techniques for rare-event discovery in particle physics. Inspired by real experiments searching for dark matter signatures.
+samreetsinghdhillon@gmail.com
