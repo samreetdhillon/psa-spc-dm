@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def simulate_pulse(t, t0, amplitude, rise_time, noise_level=0.25):
+def simulate_pulse(t, t0, amplitude, rise_time, noise_level=0.40):
     """
     Generates a synthetic SPC pulse using a simplified response function.
     t: time array

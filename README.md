@@ -158,9 +158,9 @@ psa-spc-dm/
 
 1. **Generate & Extract Features:** `python main.py`
 2. **Train Model:** `python src/models/train.py`
-3. **Run Blind Tests:** `python -m src.models.blind_test`
+3. **Run Blind Tests:** `python src\models\blind_test.py`
 4. **Analyze Physics:** `python src/utils/physical_analysis.py`
-5. **Visualize Feature Separation:** `python -m src.utils.visualize_separation`
+5. **Visualize Feature Separation:** `python src\utils\visualize_separation.py`
 6. **Final Run:** `python src/final_discovery_run.py`
 
 ## Contact

@@ -20,13 +20,6 @@ def finalize_project():
     print("\n--- STEP 3: FINAL BLIND DISCOVERY RUN ---")
     # Should return 0 Fake Discoveries
     run_physical_analysis()
-    
-    print("\n--- PROJECT CONCLUSION ---")
-    print("Your project successfully demonstrates a full R&D pipeline:")
-    print("1. Synthetic SPC Pulse Generation (NEWS-G/DarkSPHERE style)")
-    print("2. Physics-based Feature Extraction (Rise-time/FWHM)")
-    print("3. ML Classification for Background Discrimination")
-    print("4. Robustness testing against detector noise and pile-up")
 
 if __name__ == "__main__":
     finalize_project()
