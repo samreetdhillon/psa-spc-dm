@@ -114,3 +114,6 @@ __pycache__
 *.tar.gz
 *.tar.bz2 
 *.rar
+
+# others
+notebooks/
