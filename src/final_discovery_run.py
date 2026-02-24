@@ -12,7 +12,6 @@ def finalize_project():
     print("--- STEP 1: UPGRADING FEATURES ---")
     print("Implementing Chi-Square Template Matching to identify pile-up...")
     
-    
     print("\n--- STEP 2: RE-TRAINING MODEL ---")
     # Retrain the Random Forest with the 'Quality Control' metrics
     train_psa_model() 

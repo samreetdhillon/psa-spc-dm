@@ -2,6 +2,8 @@
 
 _A machine learning pipeline for discriminating dark matter signals from background noise in Spherical Proportional Counter (SPC) detectors using pulse shape analysis (PSA) and physics-based feature extraction._
 
+Read the full project report [here](https://drive.google.com/file/d/1_N-UA4l779qbop1tn01nEXzNAl8G_jUt/view?usp=sharing).
+
 ## Problem
 
 The search for Dark Matter is a "needle in a haystack" problem. Dark matter detection experiments like NEWS-G and DarkSPHERE use Spherical Proportional Counter (SPC), in which a Dark Matter interaction (Signal) produces a tiny electronic pulse. Unfortunately, natural radioactivity and electronic noise (Background) produce pulses that look almost identical.
